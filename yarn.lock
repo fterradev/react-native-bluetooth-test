@@ -3004,6 +3004,10 @@ react-devtools-core@3.0.0:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
+react-native-bluetooth-cross-platform@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/react-native-bluetooth-cross-platform/-/react-native-bluetooth-cross-platform-0.0.8.tgz#0aaf1654b4cab2eaeba7fbbc9827fcc186f7188c"
+
 react-native-drawer@2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/react-native-drawer/-/react-native-drawer-2.5.0.tgz#022cba5c0516126a9fc9cce3185cb46c644b51c4"
