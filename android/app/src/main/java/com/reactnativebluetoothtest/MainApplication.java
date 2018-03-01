@@ -1,4 +1,4 @@
-package com.reactnativebluetooth;
+package com.reactnativebluetoothtest;
 
 import android.app.Application;
 

@@ -1,3 +1,3 @@
-rootProject.name = 'reactnativebluetooth'
+rootProject.name = 'reactnativebluetoothtest'
 
 include ':app'
