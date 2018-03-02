@@ -1,0 +1,146 @@
+Desinstalei
+
+Reinstalei e relinkei
+
+> Configuring > 0/3 projects > root project#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (malloc) failed to allocate 1702192 bytes for Chunk::new
+# An error report file with more information is saved as:
+# C:\Users\fterr\dev\react-native-bluetooth-test\android\hs_err_pid15504.log
+#
+# Compiler replay data is saved as:
+# C:\Users\fterr\dev\react-native-bluetooth-test\android\replay_pid15504.log
+
+
+C:\Users\fterr\dev\react-native-bluetooth-test>react-native run-android --install-debug
+Scanning folders for symlinks in C:\Users\fterr\dev\react-native-bluetooth-test\node_modules (114ms)
+Starting JS server...
+Building and installing the app on the device (cd android && gradlew.bat installDebug true)...
+File C:\Users\fterr\.android\repositories.cfg could not be loaded.
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+A problem occurred configuring project ':app'.
+> Could not resolve all dependencies for configuration ':app:_debugApk'.
+   > A problem occurred configuring project ':react-native-bluetooth-cross-platform'.
+      > Could not resolve all dependencies for configuration ':react-native-bluetooth-cross-platform:_debugPublishCopy'.
+         > Could not find any matches for io.underdark:underdark:1.+ as no versions of io.underdark:underdark are available.
+           Required by:
+               reactnativebluetoothtest:react-native-bluetooth-cross-platform:unspecified
+
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.
+
+BUILD FAILED
+
+Total time: 22.182 secs
+Could not install the app on the device, read the error above for details.
+Make sure you have an Android emulator running or a device connected and have
+set up your Android development environment:
+https://facebook.github.io/react-native/docs/android-setup.html
+
+
+Adicionei no maven.
+
+
+C:\Users\fterr\dev\react-native-bluetooth-test>react-native run-android --install-debug
+Scanning folders for symlinks in C:\Users\fterr\dev\react-native-bluetooth-test\node_modules (104ms)
+Starting JS server...
+Building and installing the app on the device (cd android && gradlew.bat installDebug true)...
+Incremental java compilation is an incubating feature.
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Task 'true' not found in root project 'reactnativebluetoothtest'.
+
+* Try:
+Run gradlew tasks to get a list of available tasks. Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.
+
+BUILD FAILED
+
+Total time: 17.065 secs
+Could not install the app on the device, read the error above for details.
+Make sure you have an Android emulator running or a device connected and have
+set up your Android development environment:
+https://facebook.github.io/react-native/docs/android-setup.html
+
+
+cd android
+gradlew tasks
+
+final do output disso foi
+
+To see all tasks and more detail, run gradlew tasks --all
+
+To see more detail about a task, run gradlew help --task <task>
+
+BUILD SUCCESSFUL
+
+Total time: 12.447 secs
+
+*** Não sei se esse BUILD SUCCESSFUL indica que "algo aconteceu".
+
+Em seguida alterei a ordem das coisas feitas pelo comando link para algo mais parecido com o manual de instalação.
+
+
+react-native run-android
+
+:app:prepareReactnativebluetoothtestReactNativeBluetoothCrossPlatformUnspecifiedLibrary FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:prepareReactnativebluetoothtestReactNativeBluetoothCrossPlatformUnspecifiedLibrary'.
+> Could not expand ZIP 'C:\Users\fterr\dev\react-native-bluetooth-test\node_modules\react-native-bluetooth-cross-platform\android\build\outputs\aar\react-native-bluetooth-cross-platform-release.aar'.
+
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.
+
+BUILD FAILED
+
+Total time: 58.064 secs
+
+
+cd android && gradlew clean
+Incremental java compilation is an incubating feature.
+:app:clean
+:react-native-bluetooth-cross-platform:clean
+
+BUILD SUCCESSFUL
+
+Total time: 20.994 secs
+
+
+
+react-native run-android
+...
+:app:installDebug
+11:54:06 E/adb: Unable to obtain result of 'adb version'
+                                                         :app:installDebug FAILEDing 98% > :app:installDebug
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:installDebug'.
+> com.android.builder.testing.api.DeviceException: Could not create ADB Bridge. ADB location: C:\Users\fterr\AppData\Local\Android\Sdk\platform-tools\adb.exe
+
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.
+
+BUILD FAILED
+
+Total time: 1 mins 50.478 secs
+
+
+Encerrei processo do adb.
+
+
+react-native run-android
+
+vscode travou e não o abri mais
+E aí funcionou a abertura do app no emulador, mas de cara já deu o erro:
+Attempt to invoke virtual method java.lang.String android.bluetooth.BluetoothAdapter.getName() on a null object reference
+Provavelmente porque o emulador não tem bluetooth.
+
