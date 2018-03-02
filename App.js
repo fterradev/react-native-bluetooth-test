@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { StyleSheet } from 'react-native';
 import {
   Container,
   Header,
@@ -34,7 +35,7 @@ export default class App extends Component {
         <Content style={styles.Content}>
           <Text>This is Content Section</Text>
           <Item rounded>
-            <Input placeholder="Message" />
+            <Input placeholder="Message" multiline numberOfLines={4} />
           </Item>
           <Button style={styles.Button}>
             <Text>Send</Text>
@@ -52,14 +53,14 @@ export default class App extends Component {
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
   Content: {
-    padding: '5%',
-    paddingLeft: '20%',
-    paddingRight: '20%'
+    flex: 1,
+    padding: '5%'
   },
-  
+
   Button: {
-    margin: 10
+    margin: 10,
+    alignSelf: 'flex-end'
   }
-};
+});
