@@ -15,6 +15,7 @@ import {
   Item,
   Input
 } from 'native-base';
+
 export default class App extends Component {
   render() {
     return (
@@ -30,12 +31,12 @@ export default class App extends Component {
           </Body>
           <Right />
         </Header>
-        <Content>
+        <Content style={styles.Content}>
           <Text>This is Content Section</Text>
           <Item rounded>
             <Input placeholder="Message" />
           </Item>
-          <Button>
+          <Button style={styles.Button}>
             <Text>Send</Text>
           </Button>
         </Content>
@@ -50,3 +51,15 @@ export default class App extends Component {
     );
   }
 }
+
+const styles = {
+  Content: {
+    padding: '5%',
+    paddingLeft: '20%',
+    paddingRight: '20%'
+  },
+  
+  Button: {
+    margin: 10
+  }
+};
