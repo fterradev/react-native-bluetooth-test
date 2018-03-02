@@ -3004,9 +3004,9 @@ react-devtools-core@3.0.0:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
-react-native-bluetooth-cross-platform@^0.0.8:
+react-native-bluetooth-cross-platform@alexkendall/react-native-bluetooth-cross-platform:
   version "0.0.8"
-  resolved "https://registry.yarnpkg.com/react-native-bluetooth-cross-platform/-/react-native-bluetooth-cross-platform-0.0.8.tgz#0aaf1654b4cab2eaeba7fbbc9827fcc186f7188c"
+  resolved "https://codeload.github.com/alexkendall/react-native-bluetooth-cross-platform/tar.gz/de0071b635cb957633e426c9080fceec70ff426f"
 
 react-native-drawer@2.5.0:
   version "2.5.0"
