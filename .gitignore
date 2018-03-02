@@ -20,3 +20,6 @@ yarn-error.log*
 /android/build
 /android/app/build
 /android/.gradle
+
+# just ignore
+/ignore
