@@ -16,8 +16,25 @@ import {
   Item,
   Input
 } from 'native-base';
+import BluetoothCP from 'react-native-bluetooth-cross-platform';
 
 export default class App extends Component {
+  componentDidMount() {
+    BluetoothCP.advertise('BT');
+    BluetoothCP.browse('BT');
+    BluetoothCP.addPeerDetectedListener((peer) => {
+      confirm(`Connect to ${JSON.stringify(peer)}?`) &&
+      BluetoothCP.inviteUser(peer.id);
+    });
+    BluetoothCP.addInviteListener((peer) => {
+      confirm(`Accept invitation from ${JSON.stringify(peer)}?`) &&
+      BluetoothCP.acceptInvitation(peer.id);
+    });
+    BluetoothCP.addConnectedListener((peer) => {
+      alert(`Peer ${JSON.stringify(peer)} is connected.`);
+    });
+  }
+
   render() {
     return (
       <Container>
