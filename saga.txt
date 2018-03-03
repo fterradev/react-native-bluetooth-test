@@ -144,3 +144,12 @@ E aí funcionou a abertura do app no emulador, mas de cara já deu o erro:
 Attempt to invoke virtual method java.lang.String android.bluetooth.BluetoothAdapter.getName() on a null object reference
 Provavelmente porque o emulador não tem bluetooth.
 
+
+=======================
+
+Outro PC:
+
+Execution failed for task ':app:installDebug'.
+> com.android.builder.testing.api.DeviceException: com.android.ddmlib.InstallException: Failed to finalize session : INSTALL_FAILED_UPDATE_INCOMPATIBLE: Package com.reactnativebluetoothtest signatures do not match the previously installed version; ignoring!
+
+Phone -> Settings -> Apps -> <Your App> -> Options (the three dots on top right) -> Uninstall for all users
