@@ -31,7 +31,7 @@ export default class App extends Component {
       BluetoothCP.acceptInvitation(peer.id);
     });
     BluetoothCP.addConnectedListener((peer) => {
-      alert(`Peer ${JSON.stringify(peer)} is connected.`);
+      alert(`Peer ${JSON.stringify(peer)} has connected.`);
     });
   }
 
