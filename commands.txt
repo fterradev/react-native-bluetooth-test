@@ -1,0 +1,6 @@
+react-native run-android
+android\gradlew clean
+android\gradlew assembleRelease
+android\adb install -r app\build\outputs\apk\app-armeabi-v7a-release-unsigned.apk
+
+procedimento keytool tem que ser administrador

@@ -1,4 +1,4 @@
-Desinstalei
+﻿Desinstalei
 
 Reinstalei e relinkei
 
@@ -153,3 +153,21 @@ Execution failed for task ':app:installDebug'.
 > com.android.builder.testing.api.DeviceException: com.android.ddmlib.InstallException: Failed to finalize session : INSTALL_FAILED_UPDATE_INCOMPATIBLE: Package com.reactnativebluetoothtest signatures do not match the previously installed version; ignoring!
 
 Phone -> Settings -> Apps -> <Your App> -> Options (the three dots on top right) -> Uninstall for all users
+
+
+Parava em bundle: Done writing bundle output
+Reiniciei e foi até o final.
+
+
+C:\Users\Fernando\dev\react-native-bluetooth-test\android>adb install -r app\build\outputs\apk\app-armeabi-v7a-release-unsigned.apk
+* daemon not running; starting now at tcp:5037
+* daemon started successfully
+adb: failed to install app\build\outputs\apk\app-armeabi-v7a-release-unsigned.apk: Failure [INSTALL_PARSE_FAILED_NO_CERTIFICATES: Package /data/app/vmdl368446174.tmp/base.apk has no certificates at entry AndroidManifest.xml]
+
+
+Fiz o procedimento para assinar.
+*keytool requer admin!
+
+
+C:\Users\Fernando\dev\react-native-bluetooth-test\android>adb install -r app\build\outputs\apk\app-armeabi-v7a-release.apk
+Success
