@@ -1,6 +1,20 @@
 react-native run-android
 android\gradlew clean
+
 android\gradlew assembleRelease
+>if fails with:
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Unable to process incoming event 'ProgressComplete ' (ProgressCompleteEvent)
+
+>then
+use one of:
+--info
+--debug
+--console plain
+https://github.com/gradle/gradle/issues/882#issuecomment-269996978
+
 android\adb install -r app\build\outputs\apk\app-armeabi-v7a-release-unsigned.apk
 
 procedimento keytool tem que ser administrador

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Alert } from 'react-native';
 import {
   Container,
   Header,
@@ -20,19 +20,44 @@ import BluetoothCP from 'react-native-bluetooth-cross-platform';
 
 export default class App extends Component {
   componentDidMount() {
-    BluetoothCP.advertise('BT');
-    BluetoothCP.browse('BT');
+    BluetoothCP.advertise('WIFI-BT');
+    BluetoothCP.browse('WIFI-BT');
     BluetoothCP.addPeerDetectedListener((peer) => {
-      confirm(`Connect to ${JSON.stringify(peer)}?`) &&
-      BluetoothCP.inviteUser(peer.id);
+      Alert.alert(
+        'Peer Detected',
+        `Connect to ${JSON.stringify(peer)}?`,
+        [
+          {text: 'Cancel', onPress: null, style: 'cancel'},
+          {text: 'OK', onPress: () => BluetoothCP.inviteUser(peer.id)},
+        ],
+        { cancelable: false }
+      );
     });
     BluetoothCP.addInviteListener((peer) => {
-      confirm(`Accept invitation from ${JSON.stringify(peer)}?`) &&
-      BluetoothCP.acceptInvitation(peer.id);
+      Alert.alert(
+        'Invitation',
+        `Accept invitation from ${JSON.stringify(peer)}?`,
+        [
+          {text: 'Cancel', onPress: null, style: 'cancel'},
+          {text: 'OK', onPress: () => BluetoothCP.acceptInvitation(peer.id)},
+        ],
+        { cancelable: false }
+      );
     });
     BluetoothCP.addConnectedListener((peer) => {
       alert(`Peer ${JSON.stringify(peer)} has connected.`);
     });
+    /*
+    Alert.alert(
+      'Test title',
+      `Test!`,
+      [
+        {text: 'Cancel', onPress: null, style: 'cancel'},
+        {text: 'OK', onPress: () => true},
+      ],
+      { cancelable: false }
+    );
+    */
   }
 
   render() {
