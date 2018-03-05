@@ -21,5 +21,8 @@ yarn-error.log*
 /android/app/build
 /android/.gradle
 
+# keystore
+/**/*.keystore
+
 # just ignore
 /ignore
