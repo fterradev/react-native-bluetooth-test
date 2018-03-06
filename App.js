@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Alert, TouchableOpacity, View } from 'react-native';
 import {
   Container,
   Header,
@@ -52,6 +52,11 @@ export default class App extends Component {
     });
     BluetoothCP.addConnectedListener((peer) => {
       alert(`Peer ${JSON.stringify(peer)} has connected.`);
+      this.setState({connected: true});
+    });
+    BluetoothCP.addPeerLostListener((peer) => {
+      alert(`Peer ${JSON.stringify(peer)} has disconnected.`);
+      this.setState({connected: false});
     });
     /*
     Alert.alert(
@@ -107,13 +112,16 @@ export default class App extends Component {
             <Picker.Item label="BT" value="BT" />
             <Picker.Item label="Disabled" value={0} />
           </Picker>
-          <Text>This is Content Section</Text>
-          <Item rounded>
-            <Input placeholder="Message" multiline numberOfLines={4} />
-          </Item>
-          <Button style={[styles.Button, styles.block]}>
-            <Text>Send</Text>
-          </Button>
+          <View style={{flex: 1}}>
+            <View style={styles.movesContainer}>
+              <TouchableOpacity style={styles.move}>
+                <Text>1</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.move}>
+                <Text>2</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </Content>
         <Footer>
           <FooterTab>
@@ -139,5 +147,19 @@ const styles = StyleSheet.create({
 
   block: {
     margin: 10
+  },
+
+  movesContainer: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+
+  move: {
+    flex: 1,
+    backgroundColor: 'lightpink',
+    margin: 10,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
