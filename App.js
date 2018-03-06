@@ -14,14 +14,20 @@ import {
   Icon,
   Text,
   Item,
-  Input
+  Input,
+  Picker
 } from 'native-base';
 import BluetoothCP from 'react-native-bluetooth-cross-platform';
 
 export default class App extends Component {
+  state = {
+    networkKind: 'WIFI-BT'
+  };
+
   componentDidMount() {
-    BluetoothCP.advertise('WIFI-BT');
-    BluetoothCP.browse('WIFI-BT');
+    const { networkKind } = this.state;
+    BluetoothCP.advertise(networkKind);
+    BluetoothCP.browse(networkKind);
     BluetoothCP.addPeerDetectedListener((peer) => {
       Alert.alert(
         'Peer Detected',
@@ -60,6 +66,20 @@ export default class App extends Component {
     */
   }
 
+  changeNetwork = (itemValue) => {
+    this.setState({
+      networkKind: itemValue || null
+    }, () => {
+      const { networkKind } = this.state;
+      BluetoothCP.stopAdvertising();
+      BluetoothCP.stopBrowsing();
+      if (networkKind !== null) {
+        BluetoothCP.advertise(networkKind);
+        BluetoothCP.browse(networkKind);
+      }
+    });
+  };
+
   render() {
     return (
       <Container>
@@ -75,11 +95,23 @@ export default class App extends Component {
           <Right />
         </Header>
         <Content style={styles.Content}>
+          <Picker
+            style={styles.block}
+            placeholder="Network"
+            mode="dropdown"
+            selectedValue={this.state.networkKind}
+            onValueChange={this.changeNetwork}
+          >
+            <Picker.Item label="WIFI-BT" value="WIFI-BT" />
+            <Picker.Item label="WIFI" value="WIFI" />
+            <Picker.Item label="BT" value="BT" />
+            <Picker.Item label="Disabled" value={0} />
+          </Picker>
           <Text>This is Content Section</Text>
           <Item rounded>
             <Input placeholder="Message" multiline numberOfLines={4} />
           </Item>
-          <Button style={styles.Button}>
+          <Button style={[styles.Button, styles.block]}>
             <Text>Send</Text>
           </Button>
         </Content>
@@ -102,7 +134,10 @@ const styles = StyleSheet.create({
   },
 
   Button: {
-    margin: 10,
     alignSelf: 'flex-end'
+  },
+
+  block: {
+    margin: 10
   }
 });
