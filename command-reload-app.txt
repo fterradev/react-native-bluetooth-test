@@ -1,0 +1,16 @@
+// https://github.com/Microsoft/vscode-react-native/blob/abee4fbc8957abd49154d8eaf3c08204f50dd5a3/src/extension/android/adb.ts
+
+    public static reloadApp(deviceId?: string): Q.Promise<void> {
+        let commands = [
+            `adb ${deviceId ? "-s " + deviceId : ""} shell input keyevent ${KeyEvents.KEYCODE_MENU}`,
+            `adb ${deviceId ? "-s " + deviceId : ""} shell input keyevent ${KeyEvents.KEYCODE_DPAD_UP}`,
+            `adb ${deviceId ? "-s " + deviceId : ""} shell input keyevent ${KeyEvents.KEYCODE_DPAD_CENTER}`,
+        ];
+        return this.commandExecutor.execute(commands[0])
+            .then(() => {
+                return this.commandExecutor.execute(commands[1]);
+            })
+            .then(() => {
+                return this.commandExecutor.execute(commands[2]);
+            });
+    }
