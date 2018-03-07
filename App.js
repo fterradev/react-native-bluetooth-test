@@ -28,35 +28,35 @@ export default class App extends Component {
     const { networkKind } = this.state;
     BluetoothCP.advertise(networkKind);
     BluetoothCP.browse(networkKind);
-    BluetoothCP.addPeerDetectedListener((peer) => {
+    BluetoothCP.addPeerDetectedListener(peer => {
       Alert.alert(
         'Peer Detected',
         `Connect to ${JSON.stringify(peer)}?`,
         [
-          {text: 'Cancel', onPress: null, style: 'cancel'},
-          {text: 'OK', onPress: () => BluetoothCP.inviteUser(peer.id)},
+          { text: 'Cancel', onPress: null, style: 'cancel' },
+          { text: 'OK', onPress: () => BluetoothCP.inviteUser(peer.id) }
         ],
         { cancelable: false }
       );
     });
-    BluetoothCP.addInviteListener((peer) => {
+    BluetoothCP.addInviteListener(peer => {
       Alert.alert(
         'Invitation',
         `Accept invitation from ${JSON.stringify(peer)}?`,
         [
-          {text: 'Cancel', onPress: null, style: 'cancel'},
-          {text: 'OK', onPress: () => BluetoothCP.acceptInvitation(peer.id)},
+          { text: 'Cancel', onPress: null, style: 'cancel' },
+          { text: 'OK', onPress: () => BluetoothCP.acceptInvitation(peer.id) }
         ],
         { cancelable: false }
       );
     });
-    BluetoothCP.addConnectedListener((peer) => {
+    BluetoothCP.addConnectedListener(peer => {
       alert(`Peer ${JSON.stringify(peer)} has connected.`);
-      this.setState({connected: true});
+      this.setState({ connected: true });
     });
-    BluetoothCP.addPeerLostListener((peer) => {
+    BluetoothCP.addPeerLostListener(peer => {
       alert(`Peer ${JSON.stringify(peer)} has disconnected.`);
-      this.setState({connected: false});
+      this.setState({ connected: false });
     });
     /*
     Alert.alert(
@@ -71,18 +71,21 @@ export default class App extends Component {
     */
   }
 
-  changeNetwork = (itemValue) => {
-    this.setState({
-      networkKind: itemValue || null
-    }, () => {
-      const { networkKind } = this.state;
-      BluetoothCP.stopAdvertising();
-      BluetoothCP.stopBrowsing();
-      if (networkKind !== null) {
-        BluetoothCP.advertise(networkKind);
-        BluetoothCP.browse(networkKind);
+  changeNetwork = itemValue => {
+    this.setState(
+      {
+        networkKind: itemValue || null
+      },
+      () => {
+        const { networkKind } = this.state;
+        BluetoothCP.stopAdvertising();
+        BluetoothCP.stopBrowsing();
+        if (networkKind !== null) {
+          BluetoothCP.advertise(networkKind);
+          BluetoothCP.browse(networkKind);
+        }
       }
-    });
+    );
   };
 
   render() {
@@ -112,7 +115,7 @@ export default class App extends Component {
             <Picker.Item label="BT" value="BT" />
             <Picker.Item label="Disabled" value={0} />
           </Picker>
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <View style={styles.movesContainer}>
               <TouchableOpacity style={styles.move}>
                 <Text>1</Text>
