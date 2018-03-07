@@ -18,3 +18,5 @@ https://github.com/gradle/gradle/issues/882#issuecomment-269996978
 android\adb install -r app\build\outputs\apk\app-armeabi-v7a-release-unsigned.apk
 
 procedimento keytool tem que ser administrador
+
+Ctrl+Shift+P > React Native: Reload App
