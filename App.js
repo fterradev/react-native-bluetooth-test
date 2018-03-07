@@ -13,8 +13,6 @@ import {
   Body,
   Icon,
   Text,
-  Item,
-  Input,
   Picker
 } from 'native-base';
 import BluetoothCP from 'react-native-bluetooth-cross-platform';
@@ -103,18 +101,20 @@ export default class App extends Component {
           <Right />
         </Header>
         <Content style={styles.Content}>
-          <Picker
-            style={styles.block}
-            placeholder="Network"
-            mode="dropdown"
-            selectedValue={this.state.networkKind}
-            onValueChange={this.changeNetwork}
-          >
-            <Picker.Item label="WIFI-BT" value="WIFI-BT" />
-            <Picker.Item label="WIFI" value="WIFI" />
-            <Picker.Item label="BT" value="BT" />
-            <Picker.Item label="Disabled" value={0} />
-          </Picker>
+          <View fixedLabel style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={[styles.label]}>Network</Text>
+            <Picker
+              style={styles.block}
+              mode="dropdown"
+              selectedValue={this.state.networkKind}
+              onValueChange={this.changeNetwork}
+            >
+              <Picker.Item label="WIFI-BT" value="WIFI-BT" />
+              <Picker.Item label="WIFI" value="WIFI" />
+              <Picker.Item label="BT" value="BT" />
+              <Picker.Item label="Disabled" value={0} />
+            </Picker>
+          </View>
           <View style={{ flex: 1 }}>
             <View style={styles.movesContainer}>
               <TouchableOpacity style={styles.move}>
@@ -144,11 +144,17 @@ const styles = StyleSheet.create({
     padding: '5%'
   },
 
+  label: {
+    flex: 1,
+    textAlign: 'right'
+  },
+
   Button: {
     alignSelf: 'flex-end'
   },
 
   block: {
+    flex: 1,
     margin: 10
   },
 
