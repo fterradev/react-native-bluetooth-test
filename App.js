@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Alert, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Alert, View } from 'react-native';
 import {
   Container,
   Header,
@@ -11,11 +11,18 @@ import {
   Left,
   Right,
   Body,
-  Icon,
   Text,
-  Picker
+  Picker,
+  Icon
 } from 'native-base';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import BluetoothCP from 'react-native-bluetooth-cross-platform';
+
+const Move = ({ name, disabled, color='white', buttonStyle={} }) => (
+  <Button disabled={disabled} style={[styles.move, {...buttonStyle}]}>
+    <FontAwesome name={name} size={30} color={color} />
+  </Button>
+);
 
 export default class App extends Component {
   state = {
@@ -96,13 +103,16 @@ export default class App extends Component {
             </Button>
           </Left>
           <Body>
-            <Title>Header</Title>
+            <Title>Rock-Paper-Scissors</Title>
           </Body>
           <Right />
         </Header>
         <Content style={styles.Content}>
-          <View fixedLabel style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={[styles.label]}>Network</Text>
+          <View
+            fixedLabel
+            style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}
+          >
+            <Text style={[styles.label]}>Network: </Text>
             <Picker
               style={styles.block}
               mode="dropdown"
@@ -116,20 +126,38 @@ export default class App extends Component {
             </Picker>
           </View>
           <View style={{ flex: 1 }}>
-            <View style={styles.movesContainer}>
-              <TouchableOpacity style={styles.move}>
-                <Text>1</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.move}>
-                <Text>2</Text>
-              </TouchableOpacity>
+            <View style={styles.rowContainer}>
+              <Text style={[styles.label]}>Opponent: </Text>
+              <Text style={[styles.textValue]}>Hello</Text>
+            </View>
+            <View style={styles.rowContainer}>
+              <Move
+                name="hand-rock-o"
+                disabled
+                buttonStyle={{backgroundColor: 'purple'}}
+              />
+            </View>
+          </View>
+          <View style={{ flex: 1, marginTop: 20 }}>
+            <View style={styles.rowContainer}>
+              <Text style={{textAlign: 'center'}}>You</Text>
+            </View>
+            <View style={styles.rowContainer}>
+              <Move name="hand-rock-o" />
+              <Move name="hand-paper-o" />
+              <Move name="hand-scissors-o" />
             </View>
           </View>
         </Content>
         <Footer>
-          <FooterTab>
+          <FooterTab style={{flex: 1, flexDirection: 'row'}}>
             <Button full>
-              <Text>Footer</Text>
+              <Text style={[styles.label]}>Wins: </Text>
+              <Text style={[styles.textValue]}>Hello</Text>
+            </Button>
+            <Button full>
+            <Text style={[styles.label]}>Losses: </Text>
+              <Text style={[styles.textValue]}>Hello</Text>
             </Button>
           </FooterTab>
         </Footer>
@@ -146,7 +174,13 @@ const styles = StyleSheet.create({
 
   label: {
     flex: 1,
-    textAlign: 'right'
+    textAlign: 'right',
+    margin: 10
+  },
+
+  textValue: {
+    flex: 1,
+    margin: 10
   },
 
   Button: {
@@ -158,17 +192,15 @@ const styles = StyleSheet.create({
     margin: 10
   },
 
-  movesContainer: {
+  rowContainer: {
     flex: 1,
     flexDirection: 'row'
   },
 
   move: {
     flex: 1,
-    backgroundColor: 'lightpink',
     margin: 10,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center'
+    height: 80,
+    justifyContent: 'center'
   }
 });
