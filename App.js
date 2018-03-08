@@ -16,17 +16,67 @@ import {
   Icon
 } from 'native-base';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Outcome from './components/Outcome';
 import BluetoothCP from 'react-native-bluetooth-cross-platform';
+import PropTypes from 'prop-types';
 
-const Move = ({ name, disabled, color='white', buttonStyle={} }) => (
-  <Button disabled={disabled} style={[styles.move, {...buttonStyle}]}>
+const Move = ({
+  name,
+  disabled = false,
+  color = 'white',
+  buttonStyle = {}
+}) => (
+  <Button disabled={disabled} style={[styles.move, { ...buttonStyle }]}>
     <FontAwesome name={name} size={30} color={color} />
   </Button>
 );
 
+Move.propTypes = {
+  name: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
+  color: PropTypes.string,
+  buttonStyle: PropTypes.object
+};
+
+const OutcomeCount = ({ title, count }) => (
+  <View
+    style={{
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center'
+    }}
+  >
+    <Text style={{ fontSize: 13, color: '#3F51B5' }}>
+      {title}: {count}
+    </Text>
+  </View>
+);
+
+OutcomeCount.propTypes = {
+  title: PropTypes.string.isRequired,
+  count: PropTypes.number.isRequired
+};
+
 export default class App extends Component {
+  /*
   state = {
-    networkKind: 'WIFI-BT'
+    networkKind: 'WIFI-BT',
+    connected: false,
+    opponent: '',
+    outcome: '',
+    wins: 0,
+    losses: 0,
+    draws: 0
+  };
+  */
+  state = {
+    networkKind: 'WIFI-BT',
+    connected: true,
+    opponent: 'Amigão',
+    outcome: 'Draw!',
+    wins: 1,
+    losses: 2,
+    draws: 3
   };
 
   componentDidMount() {
@@ -57,11 +107,17 @@ export default class App extends Component {
     });
     BluetoothCP.addConnectedListener(peer => {
       alert(`Peer ${JSON.stringify(peer)} has connected.`);
-      this.setState({ connected: true });
+      this.setState({
+        connected: true,
+        opponent: peer.displayName
+      });
     });
     BluetoothCP.addPeerLostListener(peer => {
       alert(`Peer ${JSON.stringify(peer)} has disconnected.`);
-      this.setState({ connected: false });
+      this.setState({
+        connected: false,
+        opponent: ''
+      });
     });
     /*
     Alert.alert(
@@ -94,6 +150,14 @@ export default class App extends Component {
   };
 
   render() {
+    const {
+      connected,
+      opponent,
+      outcome,
+      wins,
+      losses,
+      draws
+    } = this.state;
     return (
       <Container>
         <Header>
@@ -127,20 +191,30 @@ export default class App extends Component {
           </View>
           <View style={{ flex: 1 }}>
             <View style={styles.rowContainer}>
-              <Text style={[styles.label]}>Opponent: </Text>
-              <Text style={[styles.textValue]}>Hello</Text>
+              <Text>Opponent: {opponent}</Text>
             </View>
             <View style={styles.rowContainer}>
               <Move
                 name="hand-rock-o"
                 disabled
-                buttonStyle={{backgroundColor: 'purple'}}
+                buttonStyle={{ backgroundColor: 'purple' }}
               />
             </View>
           </View>
+          <View
+            style={{
+              flex: 1,
+              marginTop: 20,
+              height: 30,
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <Outcome outcome={outcome} />
+          </View>
           <View style={{ flex: 1, marginTop: 20 }}>
             <View style={styles.rowContainer}>
-              <Text style={{textAlign: 'center'}}>You</Text>
+              <Text>You</Text>
             </View>
             <View style={styles.rowContainer}>
               <Move name="hand-rock-o" />
@@ -150,15 +224,17 @@ export default class App extends Component {
           </View>
         </Content>
         <Footer>
-          <FooterTab style={{flex: 1, flexDirection: 'row'}}>
-            <Button full>
-              <Text style={[styles.label]}>Wins: </Text>
-              <Text style={[styles.textValue]}>Hello</Text>
-            </Button>
-            <Button full>
-            <Text style={[styles.label]}>Losses: </Text>
-              <Text style={[styles.textValue]}>Hello</Text>
-            </Button>
+          <FooterTab
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
+            <OutcomeCount title="Wins" count={wins} />
+            <OutcomeCount title="Losses" count={losses} />
+            <OutcomeCount title="Draws" count={draws} />
           </FooterTab>
         </Footer>
       </Container>
