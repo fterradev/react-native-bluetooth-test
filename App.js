@@ -24,9 +24,14 @@ const Move = ({
   name,
   disabled = false,
   color = 'white',
-  buttonStyle = {}
+  buttonStyle = {},
+  onClick = undefined
 }) => (
-  <Button disabled={disabled} style={[styles.move, { ...buttonStyle }]}>
+  <Button
+    disabled={disabled}
+    style={[styles.move, { ...buttonStyle }]}
+    onClick={onClick}
+  >
     <FontAwesome name={name} size={30} color={color} />
   </Button>
 );
@@ -35,7 +40,8 @@ Move.propTypes = {
   name: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
   color: PropTypes.string,
-  buttonStyle: PropTypes.object
+  buttonStyle: PropTypes.object,
+  onClick: PropTypes.func
 };
 
 const OutcomeCount = ({ title, count }) => (
@@ -76,7 +82,10 @@ export default class App extends Component {
     outcome: 'Draw!',
     wins: 1,
     losses: 2,
-    draws: 3
+    draws: 3,
+    userMove: null,
+    opponentMove: null,
+    peerId: null
   };
 
   componentDidMount() {
@@ -109,6 +118,7 @@ export default class App extends Component {
       alert(`Peer ${JSON.stringify(peer)} has connected.`);
       this.setState({
         connected: true,
+        peerId: peer.id,
         opponent: peer.displayName
       });
     });
@@ -116,6 +126,7 @@ export default class App extends Component {
       alert(`Peer ${JSON.stringify(peer)} has disconnected.`);
       this.setState({
         connected: false,
+        peerId: null,
         opponent: ''
       });
     });
@@ -149,15 +160,15 @@ export default class App extends Component {
     );
   };
 
+  AppMove = (props) => (
+    <Move {...props} onClick={() => this.setState({
+      opponent: 'Maicon'
+    })} />
+  );
+
   render() {
-    const {
-      connected,
-      opponent,
-      outcome,
-      wins,
-      losses,
-      draws
-    } = this.state;
+    const { connected, opponent, outcome, wins, losses, draws } = this.state;
+    const AppMove = this.AppMove;
     return (
       <Container>
         <Header>
@@ -172,10 +183,7 @@ export default class App extends Component {
           <Right />
         </Header>
         <Content style={styles.Content}>
-          <View
-            fixedLabel
-            style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}
-          >
+          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
             <Text style={[styles.label]}>Network: </Text>
             <Picker
               style={styles.block}
@@ -189,7 +197,7 @@ export default class App extends Component {
               <Picker.Item label="Disabled" value={0} />
             </Picker>
           </View>
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 5 }}>
             <View style={styles.rowContainer}>
               <Text>Opponent: {opponent}</Text>
             </View>
@@ -203,23 +211,22 @@ export default class App extends Component {
           </View>
           <View
             style={{
-              flex: 1,
+              flex: 3,
               marginTop: 20,
-              height: 30,
               justifyContent: 'center',
               alignItems: 'center'
             }}
           >
             <Outcome outcome={outcome} />
           </View>
-          <View style={{ flex: 1, marginTop: 20 }}>
+          <View style={{ flex: 5, marginTop: 20 }}>
             <View style={styles.rowContainer}>
               <Text>You</Text>
             </View>
             <View style={styles.rowContainer}>
-              <Move name="hand-rock-o" />
-              <Move name="hand-paper-o" />
-              <Move name="hand-scissors-o" />
+              <AppMove name="hand-rock-o" />
+              <AppMove name="hand-paper-o" />
+              <AppMove name="hand-scissors-o" />
             </View>
           </View>
         </Content>
@@ -276,7 +283,6 @@ const styles = StyleSheet.create({
   move: {
     flex: 1,
     margin: 10,
-    height: 80,
     justifyContent: 'center'
   }
 });
