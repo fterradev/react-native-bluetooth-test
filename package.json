@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "native-base": "^2.3.9",
+    "prop-types": "^15.6.1",
     "react": "16.2.0",
     "react-native": "0.52.0",
     "react-native-bluetooth-cross-platform": "alexkendall/react-native-bluetooth-cross-platform",

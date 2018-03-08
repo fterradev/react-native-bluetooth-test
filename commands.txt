@@ -20,3 +20,11 @@ android\adb install -r app\build\outputs\apk\app-armeabi-v7a-release-unsigned.ap
 procedimento keytool tem que ser administrador
 
 Ctrl+Shift+P > React Native: Reload App
+
+>if fails with:
+error: bundling failed: Error: While resolving module `react-native-vector-icons/FontAwesome`, the Haste package `react-native-vector-icons` was found. However the module `FontAwesome` could not be found within the package.
+
+>then
+del .\node_modules\react-native\local-cli\core\__fixtures__\files\package.json
+
+>see https://github.com/oblador/react-native-vector-icons/issues/626 for more options.

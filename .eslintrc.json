@@ -23,6 +23,9 @@
         "no-unreachable": "warn",
         "no-unused-vars": "warn",
         "constructor-super": "warn",
-        "valid-typeof": "warn"
+        "valid-typeof": "warn",
+        "react-native/no-unused-styles": "off",
+        "react-native/no-inline-styles": "off",
+        "react-native/no-color-literals": "off"
     }
 }
