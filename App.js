@@ -24,13 +24,19 @@ const Move = ({
   name,
   disabled = false,
   color = 'white',
-  buttonStyle = {},
-  onClick = undefined
+  style = {},
+  onPress = undefined,
+  ...props
 }) => (
   <Button
     disabled={disabled}
-    style={[styles.move, { ...buttonStyle }]}
-    onClick={onClick}
+    style={
+      Array.isArray(style)
+        ? [styles.move, ...style]
+        : [styles.move, { ...style }]
+    }
+    onPress={onPress}
+    {...props}
   >
     <FontAwesome name={name} size={30} color={color} />
   </Button>
@@ -40,8 +46,11 @@ Move.propTypes = {
   name: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
   color: PropTypes.string,
-  buttonStyle: PropTypes.object,
-  onClick: PropTypes.func
+  style: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.arrayOf(PropTypes.object)
+  ]),
+  onPress: PropTypes.func
 };
 
 const OutcomeCount = ({ title, count }) => (
@@ -89,6 +98,7 @@ export default class App extends Component {
   };
 
   componentDidMount() {
+    console.log(this.appMove.style);
     const { networkKind } = this.state;
     BluetoothCP.advertise(networkKind);
     BluetoothCP.browse(networkKind);
@@ -160,10 +170,15 @@ export default class App extends Component {
     );
   };
 
-  AppMove = (props) => (
-    <Move {...props} onClick={() => this.setState({
-      opponent: 'Maicon'
-    })} />
+  AppMove = props => (
+    <Move
+      {...props}
+      onPress={() =>
+        this.setState({
+          userMove: props.name
+        })
+      }
+    />
   );
 
   render() {
@@ -182,8 +197,15 @@ export default class App extends Component {
           </Body>
           <Right />
         </Header>
-        <Content style={styles.Content}>
-          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+        <Content style={styles.Content} contentContainerStyle={{ flex: 1 }}>
+          <View
+            style={{
+              flex: 3,
+              flexDirection: 'row',
+              alignItems: 'center',
+              backgroundColor: 'skyblue'
+            }}
+          >
             <Text style={[styles.label]}>Network: </Text>
             <Picker
               style={styles.block}
@@ -197,36 +219,60 @@ export default class App extends Component {
               <Picker.Item label="Disabled" value={0} />
             </Picker>
           </View>
-          <View style={{ flex: 5 }}>
+          <View style={{ flex: 5, backgroundColor: 'powderblue', padding: 10 }}>
             <View style={styles.rowContainer}>
               <Text>Opponent: {opponent}</Text>
             </View>
-            <View style={styles.rowContainer}>
+            <View style={[styles.rowContainer, { flex: 2 }]}>
               <Move
                 name="hand-rock-o"
                 disabled
-                buttonStyle={{ backgroundColor: 'purple' }}
+                style={{ backgroundColor: 'purple' }}
               />
             </View>
           </View>
           <View
             style={{
-              flex: 3,
-              marginTop: 20,
+              flex: 4,
+              padding: 10,
               justifyContent: 'center',
-              alignItems: 'center'
+              alignItems: 'center',
+              backgroundColor: 'skyblue'
             }}
           >
             <Outcome outcome={outcome} />
           </View>
-          <View style={{ flex: 5, marginTop: 20 }}>
+          <View style={{ flex: 5, padding: 10, backgroundColor: 'powderblue' }}>
             <View style={styles.rowContainer}>
               <Text>You</Text>
             </View>
-            <View style={styles.rowContainer}>
-              <AppMove name="hand-rock-o" />
+            <View
+              style={[styles.rowContainer, { flex: 2, alignItems: 'stretch' }]}
+            >
+              <View
+                style={[
+                  styles.test,
+                  { flex: 1, backgroundColor: 'red', height: undefined, alignSelf: 'stretch' }
+                ]}
+              >
+                <Text>rrr</Text>
+              </View>
+              <AppMove
+                name="hand-rock-o"
+                style={[{ flex: 1, height: undefined }]}
+                contentContainerStyle={[{ flex: 1, height: null }]}
+              />
               <AppMove name="hand-paper-o" />
               <AppMove name="hand-scissors-o" />
+              <Button
+                ref={element => {
+                  this.appMove = element;
+                }}
+                style={{ flex: 1, backgroundColor: 'red', height: undefined, alignSelf: 'stretch' }}
+                contentContainerStyle={{ flex: 1, backgroundColor: 'red', height: undefined, alignSelf: 'stretch' }}
+              >
+                <Text>wwww</Text>
+              </Button>
             </View>
           </View>
         </Content>
@@ -252,7 +298,13 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   Content: {
     flex: 1,
-    padding: '5%'
+    padding: '5%',
+    backgroundColor: '#bbb'
+  },
+
+  test: {
+    height: 20,
+    alignSelf: 'flex-start'
   },
 
   label: {
