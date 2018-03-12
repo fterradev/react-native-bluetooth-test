@@ -4,24 +4,29 @@ import PropTypes from 'prop-types';
 
 class Outcome extends Component {
   state = {
-    bounceValue: new Animated.Value(0.1)
+    bounceValue: new Animated.Value(0.1),
+    fadeOutValue: new Animated.Value(1)
   };
 
   componentDidMount() {
-    const { bounceValue } = this.state;
-    Animated.timing(bounceValue, { toValue: 1, duration: 1000 }).start();
+    const { bounceValue, fadeOutValue } = this.state;
+    Animated.sequence([
+      Animated.spring(bounceValue, { toValue: 1, speed: 10 }),
+      Animated.timing(fadeOutValue, { toValue: 0, timing: 0.5 })
+    ]).start();
   }
 
   render() {
     const { outcome } = this.props;
-    const { bounceValue } = this.state;
+    const { bounceValue, fadeOutValue } = this.state;
 
     return (
       <Animated.Text
         style={{
           fontSize: 30,
           fontWeight: 'bold',
-          transform: [{ scale: bounceValue }]
+          transform: [{ scale: bounceValue }],
+          opacity: fadeOutValue
         }}
       >
         {outcome}

@@ -98,7 +98,6 @@ export default class App extends Component {
   };
 
   componentDidMount() {
-    console.log(this.appMove.style);
     const { networkKind } = this.state;
     BluetoothCP.advertise(networkKind);
     BluetoothCP.browse(networkKind);
@@ -242,37 +241,16 @@ export default class App extends Component {
           >
             <Outcome outcome={outcome} />
           </View>
-          <View style={{ flex: 5, padding: 10, backgroundColor: 'powderblue' }}>
+          <View style={{ flex: 5, backgroundColor: 'powderblue', padding: 10 }}>
             <View style={styles.rowContainer}>
               <Text>You</Text>
             </View>
             <View
               style={[styles.rowContainer, { flex: 2, alignItems: 'stretch' }]}
             >
-              <View
-                style={[
-                  styles.test,
-                  { flex: 1, backgroundColor: 'red', height: undefined, alignSelf: 'stretch' }
-                ]}
-              >
-                <Text>rrr</Text>
-              </View>
-              <AppMove
-                name="hand-rock-o"
-                style={[{ flex: 1, height: undefined }]}
-                contentContainerStyle={[{ flex: 1, height: null }]}
-              />
+              <AppMove name="hand-rock-o" />
               <AppMove name="hand-paper-o" />
               <AppMove name="hand-scissors-o" />
-              <Button
-                ref={element => {
-                  this.appMove = element;
-                }}
-                style={{ flex: 1, backgroundColor: 'red', height: undefined, alignSelf: 'stretch' }}
-                contentContainerStyle={{ flex: 1, backgroundColor: 'red', height: undefined, alignSelf: 'stretch' }}
-              >
-                <Text>wwww</Text>
-              </Button>
             </View>
           </View>
         </Content>
@@ -335,6 +313,8 @@ const styles = StyleSheet.create({
   move: {
     flex: 1,
     margin: 10,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    alignSelf: 'stretch',
+    height: 'auto'
   }
 });
