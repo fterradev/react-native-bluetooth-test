@@ -28,3 +28,13 @@ error: bundling failed: Error: While resolving module `react-native-vector-icons
 del .\node_modules\react-native\local-cli\core\__fixtures__\files\package.json
 
 >see https://github.com/oblador/react-native-vector-icons/issues/626 for more options.
+
+Se fechar o app mas o server ainda estiver rodando, talvez isto funcione:
+adb -s 0038133390 shell am start -n com.reactnativebluetoothtest/com.reactnativebluetoothtest.MainActivity
+(ou react native: run android no vs code.)
+
+Menu:
+adb shell input keyevent 82
+
+Toggle Inspector:
+adb shell input keyevent 82 && adb shell input keyevent 19 && adb shell input keyevent 20 && adb shell input keyevent 20 && adb shell input keyevent 20 && adb shell input keyevent 20 && adb shell input keyevent 23
