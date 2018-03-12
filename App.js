@@ -27,20 +27,23 @@ const Move = ({
   style = {},
   onPress = undefined,
   ...props
-}) => (
-  <Button
-    disabled={disabled}
-    style={
-      Array.isArray(style)
-        ? [styles.move, ...style]
-        : [styles.move, { ...style }]
-    }
-    onPress={onPress}
-    {...props}
-  >
-    <FontAwesome name={name} size={30} color={color} />
-  </Button>
-);
+}) => {
+  console.log(style);
+  return (
+    <Button
+      disabled={disabled}
+      style={
+        Array.isArray(style)
+          ? [styles.move, ...style]
+          : [styles.move, { ...style }]
+      }
+      onPress={onPress}
+      {...props}
+    >
+      <FontAwesome name={name} size={30} color={color} />
+    </Button>
+  );
+};
 
 Move.propTypes = {
   name: PropTypes.string.isRequired,
@@ -87,7 +90,7 @@ export default class App extends Component {
   state = {
     networkKind: 'WIFI-BT',
     connected: true,
-    opponent: 'Amigão',
+    opponent: 'Friend',
     outcome: 'Draw!',
     wins: 1,
     losses: 2,
@@ -139,6 +142,12 @@ export default class App extends Component {
         opponent: ''
       });
     });
+    BluetoothCP.addReceivedMessageListener(({ message }) => {
+      this.setState({
+        opponentMove: message
+      });
+      this.endTurn();
+    });
     /*
     Alert.alert(
       'Test title',
@@ -150,6 +159,43 @@ export default class App extends Component {
       { cancelable: false }
     );
     */
+  }
+
+  endTurn = () => {
+    const { userMove, opponentMove } = this.state;
+    let outcome = 'draw';
+    if (userMove && opponentMove) {
+      switch (userMove) {
+        case 'hand-rock-o':
+        switch (opponentMove) {
+          case 'hand-paper-o':
+            outcome = 'lose';
+            break;
+          case 'hand-scissors-o':
+            outcome = 'won';
+            break;
+          default:
+        case 'hand-paper-o':
+        switch (opponentMove) {
+          case 'hand-rock-o':
+            outcome = 'won';
+            break;
+          case 'hand-scissors-o':
+            outcome = 'lose';
+            break;
+          default:
+        case 'hand-scissors-o':
+        switch (opponentMove) {
+          case 'hand-rock-o':
+            outcome = 'lose';
+            break;
+          case 'hand-paper-o':
+            outcome = 'won';
+            break;
+        
+        
+      }
+    }
   }
 
   changeNetwork = itemValue => {
@@ -169,20 +215,22 @@ export default class App extends Component {
     );
   };
 
-  AppMove = props => (
-    <Move
-      {...props}
-      onPress={() =>
-        this.setState({
-          userMove: props.name
-        })
-      }
-    />
-  );
+  componentWillUpdate() {
+
+  }
 
   render() {
-    const { connected, opponent, outcome, wins, losses, draws } = this.state;
-    const AppMove = this.AppMove;
+    const {
+      connected,
+      opponent,
+      peerId,
+      userMove,
+      outcome,
+      wins,
+      losses,
+      draws
+    } = this.state;
+    const moveDisabled = userMove !== null;
     return (
       <Container>
         <Header>
@@ -218,40 +266,82 @@ export default class App extends Component {
               <Picker.Item label="Disabled" value={0} />
             </Picker>
           </View>
-          <View style={{ flex: 5, backgroundColor: 'powderblue', padding: 10 }}>
-            <View style={styles.rowContainer}>
-              <Text>Opponent: {opponent}</Text>
-            </View>
-            <View style={[styles.rowContainer, { flex: 2 }]}>
-              <Move
-                name="hand-rock-o"
-                disabled
-                style={{ backgroundColor: 'purple' }}
-              />
-            </View>
-          </View>
-          <View
-            style={{
-              flex: 4,
-              padding: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'skyblue'
-            }}
-          >
-            <Outcome outcome={outcome} />
-          </View>
-          <View style={{ flex: 5, backgroundColor: 'powderblue', padding: 10 }}>
-            <View style={styles.rowContainer}>
-              <Text>You</Text>
-            </View>
-            <View
-              style={[styles.rowContainer, { flex: 2, alignItems: 'stretch' }]}
-            >
-              <AppMove name="hand-rock-o" />
-              <AppMove name="hand-paper-o" />
-              <AppMove name="hand-scissors-o" />
-            </View>
+          <View style={{ flex: 14 }}>
+            {connected && (
+              <View style={{ flex: 1 }}>
+                <View
+                  style={{
+                    flex: 5,
+                    backgroundColor: 'powderblue',
+                    padding: 10
+                  }}
+                >
+                  <View style={styles.rowContainer}>
+                    <Text>Opponent: {opponent}</Text>
+                  </View>
+                  <View style={[styles.rowContainer, { flex: 2 }]}>
+                    {userMove && (
+                      <Move
+                        name="hand-rock-o"
+                        isOpponents
+                        disabled
+                        style={{ backgroundColor: 'purple' }}
+                      />
+                    )}
+                  </View>
+                </View>
+                <View
+                  style={{
+                    flex: 4,
+                    padding: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'skyblue'
+                  }}
+                >
+                  {outcome && <Outcome outcome={outcome} />}
+                </View>
+                <View
+                  style={{
+                    flex: 5,
+                    backgroundColor: 'powderblue',
+                    padding: 10
+                  }}
+                >
+                  <View style={styles.rowContainer}>
+                    <Text>You</Text>
+                  </View>
+                  <View
+                    style={[
+                      styles.rowContainer,
+                      { flex: 2, alignItems: 'stretch' }
+                    ]}
+                  >
+                    {['hand-rock-o', 'hand-paper-o', 'hand-scissors-o'].map(
+                      move => (
+                        <Move
+                          key={move}
+                          name={move}
+                          onPress={() =>
+                            this.setState({
+                              userMove: move
+                            }, () => {
+                              BluetoothCP.sendMessage(move, peerId);
+                            })
+                          }
+                          disabled={moveDisabled}
+                          style={
+                            move === userMove
+                              ? { backgroundColor: 'green' }
+                              : {}
+                          }
+                        />
+                      )
+                    )}
+                  </View>
+                </View>
+              </View>
+            )}
           </View>
         </Content>
         <Footer>
@@ -316,5 +406,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'stretch',
     height: 'auto'
+  },
+
+  selectedMove: {
+    backgroundColor: 'green'
+  },
+
+  nonSelectedMove: {
+    backgroundColor: 'gray'
   }
 });
