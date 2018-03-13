@@ -20,6 +20,10 @@ import Outcome from './components/Outcome';
 import BluetoothCP from 'react-native-bluetooth-cross-platform';
 import PropTypes from 'prop-types';
 
+const OUTCOME_WIN = 'You Win!';
+const OUTCOME_LOSE = 'You Lose!';
+const OUTCOME_DRAW = 'Draw!';
+
 const Move = ({
   name,
   disabled = false,
@@ -28,14 +32,13 @@ const Move = ({
   onPress = undefined,
   ...props
 }) => {
-  console.log(style);
   return (
     <Button
       disabled={disabled}
       style={
         Array.isArray(style)
           ? [styles.move, ...style]
-          : [styles.move, { ...style }]
+          : [styles.move, typeof style === 'object' ? { ...style } : style]
       }
       onPress={onPress}
       {...props}
@@ -49,10 +52,7 @@ Move.propTypes = {
   name: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
   color: PropTypes.string,
-  style: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.arrayOf(PropTypes.object)
-  ]),
+  style: PropTypes.any,
   onPress: PropTypes.func
 };
 
@@ -101,6 +101,7 @@ export default class App extends Component {
   };
 
   componentDidMount() {
+    //console.log('styles.selectedMove: ', styles.selectedMove.constructor.name);
     const { networkKind } = this.state;
     BluetoothCP.advertise(networkKind);
     BluetoothCP.browse(networkKind);
@@ -161,42 +162,43 @@ export default class App extends Component {
     */
   }
 
-  endTurn = () => {
+  tryEndTurn = () => {
     const { userMove, opponentMove } = this.state;
-    let outcome = 'draw';
+    let outcome = OUTCOME_DRAW;
     if (userMove && opponentMove) {
       switch (userMove) {
         case 'hand-rock-o':
-        switch (opponentMove) {
-          case 'hand-paper-o':
-            outcome = 'lose';
-            break;
-          case 'hand-scissors-o':
-            outcome = 'won';
-            break;
-          default:
+          switch (opponentMove) {
+            case 'hand-paper-o':
+              outcome = OUTCOME_LOSE;
+              break;
+            case 'hand-scissors-o':
+              outcome = OUTCOME_WIN;
+              break;
+          }
+          break;
         case 'hand-paper-o':
-        switch (opponentMove) {
-          case 'hand-rock-o':
-            outcome = 'won';
-            break;
-          case 'hand-scissors-o':
-            outcome = 'lose';
-            break;
-          default:
+          switch (opponentMove) {
+            case 'hand-rock-o':
+              outcome = OUTCOME_WIN;
+              break;
+            case 'hand-scissors-o':
+              outcome = OUTCOME_LOSE;
+              break;
+          }
+          break;
         case 'hand-scissors-o':
-        switch (opponentMove) {
-          case 'hand-rock-o':
-            outcome = 'lose';
-            break;
-          case 'hand-paper-o':
-            outcome = 'won';
-            break;
-        
-        
+          switch (opponentMove) {
+            case 'hand-rock-o':
+              outcome = OUTCOME_LOSE;
+              break;
+            case 'hand-paper-o':
+              outcome = OUTCOME_WIN;
+              break;
+          }
       }
     }
-  }
+  };
 
   changeNetwork = itemValue => {
     this.setState(
@@ -215,9 +217,7 @@ export default class App extends Component {
     );
   };
 
-  componentWillUpdate() {
-
-  }
+  componentWillUpdate() {}
 
   render() {
     const {
@@ -323,18 +323,17 @@ export default class App extends Component {
                           key={move}
                           name={move}
                           onPress={() =>
-                            this.setState({
-                              userMove: move
-                            }, () => {
-                              BluetoothCP.sendMessage(move, peerId);
-                            })
+                            this.setState(
+                              {
+                                userMove: move
+                              },
+                              () => {
+                                //BluetoothCP.sendMessage(move, peerId);
+                              }
+                            )
                           }
                           disabled={moveDisabled}
-                          style={
-                            move === userMove
-                              ? { backgroundColor: 'green' }
-                              : {}
-                          }
+                          style={move === userMove ? styles.selectedMove : {}}
                         />
                       )
                     )}
