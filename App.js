@@ -24,6 +24,12 @@ const OUTCOME_WIN = 'You Win!';
 const OUTCOME_LOSE = 'You Lose!';
 const OUTCOME_DRAW = 'Draw!';
 
+const MOVE_ROCK = 'rock';
+const MOVE_PAPER = 'paper';
+const MOVE_SCISSORS = 'scissors';
+
+const possibleMoves = [MOVE_ROCK, MOVE_PAPER, MOVE_SCISSORS];
+
 const Move = ({
   name,
   disabled = false,
@@ -76,17 +82,19 @@ OutcomeCount.propTypes = {
 };
 
 export default class App extends Component {
-  /*
   state = {
     networkKind: 'WIFI-BT',
     connected: false,
-    opponent: '',
-    outcome: '',
+    opponent: null,
+    outcome: null,
     wins: 0,
     losses: 0,
-    draws: 0
+    draws: 0,
+    userMove: null,
+    opponentMove: null,
+    peerId: null
   };
-  */
+  /*
   state = {
     networkKind: 'WIFI-BT',
     connected: true,
@@ -99,6 +107,7 @@ export default class App extends Component {
     opponentMove: null,
     peerId: null
   };
+  */
 
   componentDidMount() {
     //console.log('styles.selectedMove: ', styles.selectedMove.constructor.name);
@@ -144,10 +153,16 @@ export default class App extends Component {
       });
     });
     BluetoothCP.addReceivedMessageListener(({ message }) => {
-      this.setState({
-        opponentMove: message
-      });
-      this.endTurn();
+      this.setState(
+        {
+          opponentMove: message
+        },
+        () => {
+          if (this.state.userMove && this.state.opponentMove) {
+            this.determineOutcome();
+          }
+        }
+      );
     });
     /*
     Alert.alert(
@@ -162,42 +177,70 @@ export default class App extends Component {
     */
   }
 
-  tryEndTurn = () => {
+  determineOutcome = () => {
     const { userMove, opponentMove } = this.state;
     let outcome = OUTCOME_DRAW;
     if (userMove && opponentMove) {
       switch (userMove) {
-        case 'hand-rock-o':
+        case MOVE_ROCK:
           switch (opponentMove) {
-            case 'hand-paper-o':
+            case MOVE_PAPER:
               outcome = OUTCOME_LOSE;
               break;
-            case 'hand-scissors-o':
+            case MOVE_SCISSORS:
               outcome = OUTCOME_WIN;
               break;
           }
           break;
-        case 'hand-paper-o':
+        case MOVE_PAPER:
           switch (opponentMove) {
-            case 'hand-rock-o':
+            case MOVE_ROCK:
               outcome = OUTCOME_WIN;
               break;
-            case 'hand-scissors-o':
+            case MOVE_SCISSORS:
               outcome = OUTCOME_LOSE;
               break;
           }
           break;
-        case 'hand-scissors-o':
+        case MOVE_SCISSORS:
           switch (opponentMove) {
-            case 'hand-rock-o':
+            case MOVE_ROCK:
               outcome = OUTCOME_LOSE;
               break;
-            case 'hand-paper-o':
+            case MOVE_PAPER:
               outcome = OUTCOME_WIN;
               break;
           }
       }
+      let outcomeCount = {};
+      if (outcome === OUTCOME_WIN) {
+        outcomeCount = {
+          wins: this.state.wins + 1
+        };
+      }
+      if (outcome === OUTCOME_LOSE) {
+        outcomeCount = {
+          losses: this.state.losses + 1
+        };
+      }
+      if (outcome === OUTCOME_DRAW) {
+        outcomeCount = {
+          draws: this.state.draws + 1
+        };
+      }
+      this.setState({
+        outcome,
+        outcomeCount
+      });
     }
+  };
+
+  newTurn = () => {
+    this.setState({
+      outcome: null,
+      userMove: null,
+      opponentMove: null
+    });
   };
 
   changeNetwork = itemValue => {
@@ -216,8 +259,6 @@ export default class App extends Component {
       }
     );
   };
-
-  componentWillUpdate() {}
 
   render() {
     const {
@@ -299,7 +340,7 @@ export default class App extends Component {
                     backgroundColor: 'skyblue'
                   }}
                 >
-                  {outcome && <Outcome outcome={outcome} />}
+                  {outcome && <Outcome outcome={outcome} callback={this.newTurn} />}
                 </View>
                 <View
                   style={{
@@ -317,26 +358,30 @@ export default class App extends Component {
                       { flex: 2, alignItems: 'stretch' }
                     ]}
                   >
-                    {['hand-rock-o', 'hand-paper-o', 'hand-scissors-o'].map(
-                      move => (
-                        <Move
-                          key={move}
-                          name={move}
-                          onPress={() =>
-                            this.setState(
-                              {
-                                userMove: move
-                              },
-                              () => {
-                                //BluetoothCP.sendMessage(move, peerId);
+                    {possibleMoves.map(move => (
+                      <Move
+                        key={move}
+                        name={`hand-${move}-o`}
+                        onPress={() =>
+                          this.setState(
+                            {
+                              userMove: move
+                            },
+                            () => {
+                              BluetoothCP.sendMessage(move, peerId);
+                              if (
+                                this.state.userMove &&
+                                this.state.opponentMove
+                              ) {
+                                this.determineOutcome();
                               }
-                            )
-                          }
-                          disabled={moveDisabled}
-                          style={move === userMove ? styles.selectedMove : {}}
-                        />
-                      )
-                    )}
+                            }
+                          )
+                        }
+                        disabled={moveDisabled}
+                        style={move === userMove ? styles.selectedMove : {}}
+                      />
+                    ))}
                   </View>
                 </View>
               </View>

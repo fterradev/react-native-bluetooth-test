@@ -13,7 +13,7 @@ class Outcome extends Component {
     Animated.sequence([
       Animated.spring(bounceValue, { toValue: 1, speed: 10 }),
       Animated.timing(fadeOutValue, { toValue: 0, timing: 0.5 })
-    ]).start();
+    ]).start(this.props.callback);
   }
 
   render() {
@@ -36,7 +36,8 @@ class Outcome extends Component {
 }
 
 Outcome.propTypes = {
-  outcome: PropTypes.string.isRequired
+  outcome: PropTypes.string.isRequired,
+  callback: PropTypes.func.isRequired
 };
 
 export default Outcome;
