@@ -246,13 +246,13 @@ export default class App extends Component {
   changeNetwork = itemValue => {
     this.setState(
       {
-        networkKind: itemValue || null
+        networkKind: itemValue
       },
       () => {
         const { networkKind } = this.state;
         BluetoothCP.stopAdvertising();
         BluetoothCP.stopBrowsing();
-        if (networkKind !== null) {
+        if (networkKind !== 0) {
           BluetoothCP.advertise(networkKind);
           BluetoothCP.browse(networkKind);
         }
