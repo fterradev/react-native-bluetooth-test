@@ -6,6 +6,9 @@
 # dependencies
 /node_modules
 
+# this would be useful if it worked.
+# !/node_modules/react-native-bluetooth-cross-platform/android/src/main/java/com/rctunderdark
+
 # misc
 .env.local
 .env.development.local

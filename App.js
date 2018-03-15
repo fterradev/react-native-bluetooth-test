@@ -83,7 +83,7 @@ OutcomeCount.propTypes = {
 
 export default class App extends Component {
   state = {
-    networkKind: 'WIFI-BT',
+    networkKind: 'WIFI', // 'WIFI-BT',
     connected: false,
     opponent: null,
     outcome: null,
@@ -141,7 +141,7 @@ export default class App extends Component {
       this.setState({
         connected: true,
         peerId: peer.id,
-        opponent: peer.displayName
+        opponent: peer.name
       });
     });
     BluetoothCP.addPeerLostListener(peer => {
@@ -230,7 +230,7 @@ export default class App extends Component {
       }
       this.setState({
         outcome,
-        outcomeCount
+        ...outcomeCount
       });
     }
   };
@@ -266,6 +266,7 @@ export default class App extends Component {
       opponent,
       peerId,
       userMove,
+      opponentMove,
       outcome,
       wins,
       losses,
@@ -321,14 +322,15 @@ export default class App extends Component {
                     <Text>Opponent: {opponent}</Text>
                   </View>
                   <View style={[styles.rowContainer, { flex: 2 }]}>
-                    {userMove && (
-                      <Move
-                        name="hand-rock-o"
-                        isOpponents
-                        disabled
-                        style={{ backgroundColor: 'purple' }}
-                      />
-                    )}
+                    {userMove &&
+                      opponentMove && (
+                        <Move
+                          name={`hand-${opponentMove}-o`}
+                          isOpponents
+                          disabled
+                          style={{ backgroundColor: 'purple' }}
+                        />
+                      )}
                   </View>
                 </View>
                 <View
@@ -340,7 +342,9 @@ export default class App extends Component {
                     backgroundColor: 'skyblue'
                   }}
                 >
-                  {outcome && <Outcome outcome={outcome} callback={this.newTurn} />}
+                  {outcome && (
+                    <Outcome outcome={outcome} callback={this.newTurn} />
+                  )}
                 </View>
                 <View
                   style={{
