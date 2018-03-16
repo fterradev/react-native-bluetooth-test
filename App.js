@@ -83,7 +83,8 @@ OutcomeCount.propTypes = {
 
 export default class App extends Component {
   state = {
-    networkKind: 'WIFI', // 'WIFI-BT',
+    networkKind: 'WIFI-BT',
+    netUnderMaintenance: false,
     connected: false,
     opponent: null,
     outcome: null,
@@ -112,8 +113,10 @@ export default class App extends Component {
   componentDidMount() {
     //console.log('styles.selectedMove: ', styles.selectedMove.constructor.name);
     const { networkKind } = this.state;
-    BluetoothCP.advertise(networkKind);
-    BluetoothCP.browse(networkKind);
+    if (networkKind !== 0) {
+      BluetoothCP.advertise(networkKind);
+      BluetoothCP.browse(networkKind);
+    }
     BluetoothCP.addPeerDetectedListener(peer => {
       Alert.alert(
         'Peer Detected',
@@ -243,25 +246,34 @@ export default class App extends Component {
     });
   };
 
-  changeNetwork = itemValue => {
-    this.setState(
-      {
-        networkKind: itemValue
-      },
-      () => {
-        const { networkKind } = this.state;
-        BluetoothCP.stopAdvertising();
-        BluetoothCP.stopBrowsing();
-        if (networkKind !== 0) {
-          BluetoothCP.advertise(networkKind);
-          BluetoothCP.browse(networkKind);
-        }
-      }
-    );
+  netMaintenanceDelay = 1500; // milliseconds
+
+  changeNetwork = newNetworkKind => {
+    const { networkKind } = this.state;
+    let delay = 0;
+    if (this.networkKind !== 0 && newNetworkKind === 0) {
+      BluetoothCP.stopAdvertising();
+      BluetoothCP.stopBrowsing();
+      delay = netMaintenanceDelay;
+      this.setState({
+        netUnderMaintenance: true
+      });
+    }
+    if (networkKind !== 0) {
+      BluetoothCP.advertise(networkKind);
+      BluetoothCP.browse(networkKind);
+    }
+    setTimeout(() => {
+      this.setState({
+        networkKind: newNetworkKind,
+        netUnderMaintenance: false
+      });
+    }, delay);
   };
 
   render() {
     const {
+      netUnderMaintenance,
       connected,
       opponent,
       peerId,
@@ -301,6 +313,7 @@ export default class App extends Component {
               mode="dropdown"
               selectedValue={this.state.networkKind}
               onValueChange={this.changeNetwork}
+              disabled={netUnderMaintenance}
             >
               <Picker.Item label="WIFI-BT" value="WIFI-BT" />
               <Picker.Item label="WIFI" value="WIFI" />
