@@ -83,8 +83,9 @@ OutcomeCount.propTypes = {
 
 export default class App extends Component {
   state = {
-    networkKind: 'WIFI-BT',
+    networkKind: 0,
     netUnderMaintenance: false,
+    netListenersStarted: false,
     connected: false,
     opponent: null,
     outcome: null,
@@ -114,59 +115,8 @@ export default class App extends Component {
     //console.log('styles.selectedMove: ', styles.selectedMove.constructor.name);
     const { networkKind } = this.state;
     if (networkKind !== 0) {
-      BluetoothCP.advertise(networkKind);
-      BluetoothCP.browse(networkKind);
+      this.changeNetwork(networkKind);
     }
-    BluetoothCP.addPeerDetectedListener(peer => {
-      Alert.alert(
-        'Peer Detected',
-        `Connect to ${JSON.stringify(peer)}?`,
-        [
-          { text: 'Cancel', onPress: null, style: 'cancel' },
-          { text: 'OK', onPress: () => BluetoothCP.inviteUser(peer.id) }
-        ],
-        { cancelable: false }
-      );
-    });
-    BluetoothCP.addInviteListener(peer => {
-      Alert.alert(
-        'Invitation',
-        `Accept invitation from ${JSON.stringify(peer)}?`,
-        [
-          { text: 'Cancel', onPress: null, style: 'cancel' },
-          { text: 'OK', onPress: () => BluetoothCP.acceptInvitation(peer.id) }
-        ],
-        { cancelable: false }
-      );
-    });
-    BluetoothCP.addConnectedListener(peer => {
-      alert(`Peer ${JSON.stringify(peer)} has connected.`);
-      this.setState({
-        connected: true,
-        peerId: peer.id,
-        opponent: peer.name
-      });
-    });
-    BluetoothCP.addPeerLostListener(peer => {
-      alert(`Peer ${JSON.stringify(peer)} has disconnected.`);
-      this.setState({
-        connected: false,
-        peerId: null,
-        opponent: ''
-      });
-    });
-    BluetoothCP.addReceivedMessageListener(({ message }) => {
-      this.setState(
-        {
-          opponentMove: message
-        },
-        () => {
-          if (this.state.userMove && this.state.opponentMove) {
-            this.determineOutcome();
-          }
-        }
-      );
-    });
     /*
     Alert.alert(
       'Test title',
@@ -249,7 +199,7 @@ export default class App extends Component {
   netMaintenanceDelay = 1500; // milliseconds
 
   changeNetwork = newNetworkKind => {
-    const { networkKind } = this.state;
+    const { networkKind, netListenersStarted } = this.state;
     let delay = 0;
     if (this.networkKind !== 0 && newNetworkKind === 0) {
       BluetoothCP.stopAdvertising();
@@ -262,6 +212,64 @@ export default class App extends Component {
     if (networkKind !== 0) {
       BluetoothCP.advertise(networkKind);
       BluetoothCP.browse(networkKind);
+      if (!netListenersStarted) {
+        BluetoothCP.addPeerDetectedListener(peer => {
+          Alert.alert(
+            'Peer Detected',
+            `Connect to ${JSON.stringify(peer)}?`,
+            [
+              { text: 'Cancel', onPress: null, style: 'cancel' },
+              { text: 'OK', onPress: () => BluetoothCP.inviteUser(peer.id) }
+            ],
+            { cancelable: false }
+          );
+        });
+        BluetoothCP.addInviteListener(peer => {
+          Alert.alert(
+            'Invitation',
+            `Accept invitation from ${JSON.stringify(peer)}?`,
+            [
+              { text: 'Cancel', onPress: null, style: 'cancel' },
+              {
+                text: 'OK',
+                onPress: () => BluetoothCP.acceptInvitation(peer.id)
+              }
+            ],
+            { cancelable: false }
+          );
+        });
+        BluetoothCP.addConnectedListener(peer => {
+          alert(`Peer ${JSON.stringify(peer)} has connected.`);
+          this.setState({
+            connected: true,
+            peerId: peer.id,
+            opponent: peer.name
+          });
+        });
+        BluetoothCP.addPeerLostListener(peer => {
+          alert(`Peer ${JSON.stringify(peer)} has disconnected.`);
+          this.setState({
+            connected: false,
+            peerId: null,
+            opponent: ''
+          });
+        });
+        BluetoothCP.addReceivedMessageListener(({ message }) => {
+          this.setState(
+            {
+              opponentMove: message
+            },
+            () => {
+              if (this.state.userMove && this.state.opponentMove) {
+                this.determineOutcome();
+              }
+            }
+          );
+        });
+        this.setState({
+          netListenersStarted: true
+        });
+      }
     }
     setTimeout(() => {
       this.setState({
