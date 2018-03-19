@@ -30,5 +30,8 @@ yarn-error.log*
 # React Native Tools
 /.vscode/.react
 
+# Android Studio
+/.idea
+
 # just ignore
 /ignore
