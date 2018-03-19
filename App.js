@@ -199,9 +199,9 @@ export default class App extends Component {
   netMaintenanceDelay = 1500; // milliseconds
 
   changeNetwork = newNetworkKind => {
-    const { networkKind, netListenersStarted } = this.state;
+    const { networkKind: curNetworkKind, netListenersStarted } = this.state;
     let delay = 0;
-    if (this.networkKind !== 0 && newNetworkKind === 0) {
+    if (curNetworkKind !== 0 && newNetworkKind === 0) {
       BluetoothCP.stopAdvertising();
       BluetoothCP.stopBrowsing();
       delay = netMaintenanceDelay;
@@ -209,9 +209,9 @@ export default class App extends Component {
         netUnderMaintenance: true
       });
     }
-    if (networkKind !== 0) {
-      BluetoothCP.advertise(networkKind);
-      BluetoothCP.browse(networkKind);
+    if (newNetworkKind !== 0) {
+      BluetoothCP.advertise(newNetworkKind);
+      BluetoothCP.browse(newNetworkKind);
       if (!netListenersStarted) {
         BluetoothCP.addPeerDetectedListener(peer => {
           Alert.alert(
@@ -321,7 +321,7 @@ export default class App extends Component {
               mode="dropdown"
               selectedValue={this.state.networkKind}
               onValueChange={this.changeNetwork}
-              disabled={netUnderMaintenance}
+              enabled={!netUnderMaintenance}
             >
               <Picker.Item label="WIFI-BT" value="WIFI-BT" />
               <Picker.Item label="WIFI" value="WIFI" />

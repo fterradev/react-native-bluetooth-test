@@ -1,4 +1,4 @@
-react-native run-android
+﻿react-native run-android
 android\gradlew clean
 
 android\gradlew assembleRelease
@@ -49,8 +49,4 @@ Tentar:
 * yarn upgrade react-native@^0.54.2
 
 Lembrar de colocar meu fork de react-native-bluetooth-cross-platform "ao lado" deste projeto.
-Caso for fazer alterações, tentar usar link.
-react-native-bluetooth-cross-platform> yarn link
-react-native-bluetooth-test> yarn link react-native-bluetooth-cross-platform
-
-Ou talvez react-native link react-native-bluetooth-cross-platform.
+Não adianta tentar usar link (ou dependência com o prefixo ":link"
