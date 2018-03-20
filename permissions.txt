@@ -1,0 +1,14 @@
+https://stackoverflow.com/questions/33728382/react-native-unnecessary-android-user-permissions-automatically-added-on-build
+
+https://medium.com/@applification/fixing-react-native-android-permissions-9e78996e9865
+
+====
+
+android.bluetooth.le.BluetoothLeScanner
+void startScan (ScanCallback callback)
+
+Usada em:
+
+https://github.com/udark/underdark-android/blob/749278420fbdfb978adcfc0c0aca729ea623cf4a/udark/underdark/src/main/java/impl/underdark/transport/bluetooth/discovery/ble/detector/BleLollipopDetector.java
+
+requer ACCESS_COARSE_LOCATION or ACCESS_FINE_LOCATION conforme descrito em: https://developer.android.com/reference/android/bluetooth/le/BluetoothLeScanner.html

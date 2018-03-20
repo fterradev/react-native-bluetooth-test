@@ -50,3 +50,6 @@ Tentar:
 
 Lembrar de colocar meu fork de react-native-bluetooth-cross-platform "ao lado" deste projeto.
 Não adianta tentar usar link (ou dependência com o prefixo ":link"
+
+Conectar android ADB via Wifi:
+When connected via USB: adb tcpip 5555. Disconnect USB, view phone IP from Settings > About Phone > Status. Now adb connect 192.168.x.x and that's it. No tools, no software. Just Works. (https://stackoverflow.com/questions/2604727/how-can-i-connect-to-android-with-adb-over-tcp#comment45408200_2604727)
