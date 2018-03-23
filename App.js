@@ -188,7 +188,7 @@ export default class App extends Component {
     }
   };
 
-  newTurn = () => {
+  startNewRound = () => {
     this.setState({
       outcome: null,
       userMove: null,
@@ -364,7 +364,7 @@ export default class App extends Component {
                   }}
                 >
                   {outcome && (
-                    <Outcome outcome={outcome} callback={this.newTurn} />
+                    <Outcome outcome={outcome} callback={this.startNewRound} />
                   )}
                 </View>
                 <View
